@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FundMatch - Authentication</title>
+  <link rel="stylesheet" href="/stylesheets/login.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="/" class="logo">FundMatch</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Login Page -->
+  <div class="auth-container" id="login-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Enter your credentials to access your account</p>
+      </div>
+      
+      <form id="login-form" method="POST" action="/login">
+        <div class="form-group">
+          <label for="login-email">Email address</label>
+          <input 
+            type="email" 
+            id="login-email" 
+            name="email"
+            placeholder="email" 
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input 
+            type="password" 
+            id="login-password" 
+            name="password"
+            placeholder="password" 
+            required
+          />
+        </div>
+        
+        <div class="checkbox-group">
+          <input type="checkbox" id="remember-me" name="remember" />
+          <label for="remember-me">Remember me</label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-full">Sign in</button>
+      </form>
+      
+     
+      <div class="auth-footer">
+        <p>Don't have an account? <a href="/signup" onclick="showSignup()">Sign up</a></p>
+        <p style="margin-top: 0.5rem;"><a href="#">Forgot password?</a></p>
+      </div>
+    </div>
+  </div>
+  <script src="/js/login.js"></script>
+</body>
+</html>

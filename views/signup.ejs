@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FundMatch - Sign Up</title>
+  <link rel="stylesheet" href="/stylesheets/login.css" />
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="/" class="logo">FundMatch</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Signup Page -->
+  <div class="auth-container" id="signup-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="auth-title">Create an account</h1>
+        <p class="auth-subtitle">Join our platform to connect with potential partners</p>
+      </div>
+
+
+
+      
+      <form id="signup-form" method="POST" action="/signup">
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" name="fullname" placeholder="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="signup-email">Email address</label>
+          <input type="email" id="signup-email" name="email" placeholder="name@company.com" required />
+        </div>
+
+        <div class="form-group" id="company-field">
+          <label for="company">Company/Startup Name</label>
+          <input type="text" id="company" name="company" placeholder="Your company name" required />
+        </div>
+
+        <div class="form-group hidden" id="fund-field">
+          <label for="fund">Fund/Investment Firm Name</label>
+          <input type="text" id="fund" name="fund" placeholder="Your investment firm" />
+        </div>
+
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" name="password" placeholder="••••••••" required />
+          <p class="error-message">Password must be at least 8 characters</p>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirmPassword" placeholder="••••••••" required />
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="terms" required />
+          <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">Create account</button>
+      </form>
+
+      <div class="divider">Or continue with</div>
+
+      <div class="social-btns">
+        <button class="social-btn">
+          <span class="social-icon"></span>
+          Google
+        </button>
+        <button class="social-btn">
+          <span class="social-icon"></span>
+          LinkedIn
+        </button>
+      </div>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a href="/login">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 FundMatch. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function setUserType(type) {
+      document.getElementById('userType').value = type;
+    }
+  </script>
+</body>
+
+</html>

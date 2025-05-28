@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FundMatch - Profile</title>
+  <link rel="stylesheet" href="/stylesheets/profile.css"/>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <div class="logo">FundMatch</div>
+        <div class="nav-links">
+          <a href="#">Dashboard</a>
+          <a href="#">Matches</a>
+          <a href="#">Messages</a>
+          <a href="#">Favorites</a>
+        </div>
+        <div class="auth-buttons">
+          <a href="/profile" class="user-profile-link">
+            <div class="user-avatar">
+              <img src="<%= user.avatarUrl || '/images/default-avatar.png' %>" alt="Profile"/>
+            </div>
+            <span class="user-name"><%= user.fullname %></span>
+          </a>
+          <a href="/logout" class="btn btn-outline">Log Out</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Profile -->
+  <main class="profile-section">
+    <div class="container">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-cover">
+          <img src="<%= user.coverUrl || '/images/default-cover.jpg' %>" alt="Cover"/>
+        </div>
+        <div class="profile-info">
+          <div class="profile-avatar">
+            <img src="<%= user.avatarUrl || '/images/default-avatar.png' %>" alt="<%= user.fullname %>"/>
+          </div>
+          <div class="profile-details">
+            <h1><%= user.fullname %></h1>
+            <p class="company-name"><%= user.company %></p>
+            <p class="profile-email"><%= user.email %></p>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-primary">Edit Profile</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Layout -->
+      <div class="profile-content">
+        <!-- Sidebar -->
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="#" class="profile-menu-item active">Overview</a>
+            <a href="#" class="profile-menu-item">Pitch Deck</a>
+            <a href="#" class="profile-menu-item">Team</a>
+            <a href="#" class="profile-menu-item">Financials</a>
+            <a href="#" class="profile-menu-item">Documents</a>
+            <a href="#" class="profile-menu-item">Settings</a>
+          </nav>
+
+          <div class="profile-completion">
+            <h3>Profile Completion</h3>
+            <div class="progress-bar">
+              <div class="progress" style="width: 65%;"></div>
+            </div>
+            <p>65% Complete</p>
+            <ul class="completion-tasks">
+              <li class="completed">Basic Information</li>
+              <li class="completed">Company Details</li>
+              <li>Upload Pitch Deck</li>
+              <li>Add Team Members</li>
+              <li>Financial Information</li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Main Profile Content -->
+        <section class="profile-main">
+          <div class="profile-section-card">
+            <h2>About</h2>
+            <p class="empty-state">Add a description about your startup to help investors understand your vision.</p>
+            <button class="btn btn-outline btn-sm">Add Description</button>
+          </div>
+
+          <div class="profile-section-card">
+            <div class="card-header">
+              <h2>Funding Information</h2>
+              <button class="btn btn-outline btn-sm">Edit</button>
+            </div>
+            <div class="funding-info empty-state">
+              <p>Complete your funding information to attract potential investors.</p>
+            </div>
+          </div>
+
+          <div class="profile-section-card">
+            <div class="card-header">
+              <h2>Recent Activity</h2>
+              <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="activity-feed">
+              <div class="activity-item">
+                <div class="activity-icon"></div>
+                <div class="activity-content">
+                  <p class="activity-text">Your profile was viewed by 3 investors this week.</p>
+                  <p class="activity-time">2 days ago</p>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon"></div>
+                <div class="activity-content">
+                  <p class="activity-text">Profile created.</p>
+                  <p class="activity-time">Just now</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section-card">
+            <div class="card-header">
+              <h2>Recommended Investors</h2>
+              <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="investor-recommendations empty-state">
+              <p>Complete your profile to receive personalized investor recommendations.</p>
+              <button class="btn btn-primary btn-sm">Complete Profile</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-logo">FundMatch</div>
+          <p class="footer-description">Bridging the gap between innovative startups and visionary investors.</p>
+        </div>
+        <div>
+          <h4 class="footer-title">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Find Investors</a></li>
+            <li><a href="#">Messages</a></li>
+            <li><a href="#">Help Center</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="#">Pitch Guide</a></li>
+            <li><a href="#">Funding Resources</a></li>
+            <li><a href="#">Success Stories</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Support</h4>
+          <ul class="footer-links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2025 FundMatch. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
