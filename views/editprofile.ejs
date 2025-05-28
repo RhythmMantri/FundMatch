@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Update your FundMatch profile information and upload images" />
+  <title><%= title || 'Edit Profile - FundMatch' %></title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" href="/stylesheets/profile.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="/stylesheets/profile.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans">
+  <!-- Header -->
+  <header class="header" role="banner">
+    <div class="container">
+      <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="logo">
+          <a href="/" aria-label="FundMatch Home">FundMatch</a>
+        </div>
+        <div class="nav-links">
+          <a href="/profile" aria-label="Back to Profile">← Back to Profile</a>
+        </div>
+        <div class="auth-buttons">
+          <a href="/profile" class="user-profile-link" aria-label="View Profile">
+            <div class="user-avatar">
+              <% if (user.avatar) { %>
+                <img src="data:image/jpeg;base64,<%= user.avatar.toString('base64') %>" alt="<%= user.fullname %> Profile Picture"/>
+              <% } else { %>
+                <img src="/images/default-avatar.png" alt="Default Profile Picture"/>
+              <% } %>
+            </div>
+            <span class="user-name"><%= user.fullname %></span>
+          </a>
+          <a href="/logout" class="btn btn-outline btn-sm" aria-label="Log Out">Log Out</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Error/Success Messages -->
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-error" role="alert">
+      <%= error %>
+    </div>
+  <% } %>
+
+  <% if (typeof success !== 'undefined' && success) { %>
+    <div class="alert alert-success" role="alert">
+      Profile updated successfully!
+    </div>
+  <% } %>
+
+  <!-- Main Content -->
+  <main class="main-content" role="main">
+    <div class="container">
+      <div class="edit-profile-container">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h1>Edit Profile</h1>
+          <p class="page-description">Update your profile information and upload images to make a great impression on potential investors.</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+          <!-- Image Upload Section -->
+          <section class="form-section" aria-labelledby="images-heading">
+            <h2 id="images-heading" class="section-title">Profile Images</h2>
+            <p class="section-description">Upload a profile picture and cover photo to personalize your profile.</p>
+            
+            <form action="/profile/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+              <div class="upload-grid">
+                <!-- Avatar Upload -->
+                <div class="upload-item">
+                  <div class="current-image">
+                    <% if (user.avatar) { %>
+                      <img src="data:image/jpeg;base64,<%= user.avatar.toString('base64') %>" alt="Current profile picture" class="avatar-preview"/>
+                    <% } else { %>
+                      <div class="placeholder-avatar">
+                        <svg class="avatar-icon" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                      </div>
+                    <% } %>
+                  </div>
+                  <div class="upload-controls">
+                    <label for="avatar" class="upload-label">
+                      <span class="upload-text">Profile Picture</span>
+                      <span class="upload-hint">Square image, max 5MB</span>
+                    </label>
+                    <input type="file" id="avatar" name="avatar" accept="image/*" class="file-input" onchange="previewImage(this, 'avatar-preview')"/>
+                  </div>
+                </div>
+
+                <!-- Cover Upload -->
+                <div class="upload-item">
+                  <div class="current-image cover">
+                    <% if (user.cover) { %>
+                      <img src="/images/upload/<%= user.profileImage %>"  alt="Current cover photo" class="cover-preview"/>
+                    <% } else { %>
+                      <div class="placeholder-cover">
+                        <svg class="cover-icon" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 . 9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                        </svg>
+                      </div>
+                    <% } %>
+                  </div>
+                  <div class="upload-controls">
+                    <label for="cover" class="upload-label">
+                      <span class="upload-text">Cover Photo</span>
+                      <span class="upload-hint">Wide image, max 5MB</span>
+                    </label>
+                    <input type="file" id="cover" name="cover" accept="image/*" class="file-input" onchange="previewImage(this, 'cover-preview')"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path  d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+                  </svg>
+                  Upload Images
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Profile Information Section -->
+          <section class="form-section" aria-labelledby="info-heading">
+            <h2 id="info-heading" class="section-title">Profile Information</h2>
+            <p class="section-description">Update your basic information to help investors learn about you and your company.</p>
+            
+            <form action="/profile/update" method="POST" class="profile-form">
+              <div class="form-grid">
+                <!-- Full Name -->
+                <div class="form-group">
+                  <label for="fullname" class="form-label required">Full Name</label>
+                  <input 
+                    type="text" 
+                    id="fullname" 
+                    name="fullname" 
+                    value="<%= user.fullname || '' %>"
+                    placeholder="Enter your full name"
+                    class="form-input"
+                    required
+                    aria-describedby="fullname-hint"
+                  />
+                  <p id="fullname-hint" class="form-hint">This will be displayed publicly on your profile</p>
+                </div>
+
+                <!-- Email (Read-only) -->
+                <div class="form-group">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    value="<%= user.email || '' %>"
+                    class="form-input"
+                    readonly
+                    aria-describedby="email-hint"
+                  />
+                  <p id="email-hint" class="form-hint">Email cannot be changed after registration</p>
+                </div>
+
+                <!-- Company Name -->
+                <div class="form-group">
+                  <label for="company" class="form-label">Company Name</label>
+                  <input 
+                    type="text" 
+                    id="company" 
+                    name="company" 
+                    value="<%= user.company || '' %>"
+                    placeholder="Enter your company name"
+                    class="form-input"
+                    aria-describedby="company-hint"
+                  />
+                  <p id="company-hint" class="form-hint">The name of your startup or company</p>
+                </div>
+
+                <!-- Job Title -->
+                <div class="form-group">
+                  <label for="jobTitle" class="form-label">Job Title</label>
+                  <input 
+                    type="text" 
+                    id="jobTitle" 
+                    name="jobTitle" 
+                    value="<%= user.jobTitle || '' %>"
+                    placeholder="e.g., CEO, Founder, CTO"
+                    class="form-input"
+                    aria-describedby="jobTitle-hint"
+                  />
+                  <p id="jobTitle-hint" class="form-hint">Your role in the company</p>
+                </div>
+
+                <!-- Industry -->
+                <div class="form-group">
+                  <label for="industry" class="form-label">Industry</label>
+                  <select 
+                    id="industry" 
+                    name="industry" 
+                    class="form-select"
+                    aria-describedby="industry-hint"
+                  >
+                    <option value="">Select Industry</option>
+                    <option value="Technology" <%= user.industry === 'Technology' ? 'selected' : '' %>>Technology</option>
+                    <option value="Healthcare" <%= user.industry === 'Healthcare' ? 'selected' : '' %>>Healthcare</option>
+                    <option value="Finance" <%= user.industry === 'Finance' ? 'selected' : '' %>>Finance</option>
+                    <option value="E-commerce" <%= user.industry === 'E-commerce' ? 'selected' : '' %>>E-commerce</option>
+                    <option value="Education" <%= user.industry === 'Education' ? 'selected' : '' %>>Education</option>
+                    <option value="Real Estate" <%= user.industry === 'Real Estate' ? 'selected' : '' %>>Real Estate</option>
+                    <option value="Food & Beverage" <%= user.industry === 'Food & Beverage' ? 'selected' : '' %>>Food & Beverage</option>
+                    <option value="Entertainment" <%= user.industry === 'Entertainment' ? 'selected' : '' %>>Entertainment</option>
+                    <option value="Other" <%= user.industry === 'Other' ? 'selected' : '' %>>Other</option>
+                  </select>
+                  <p id="industry-hint" class="form-hint">Select the industry your company operates in</p>
+                </div>
+
+                <!-- Location -->
+                <div class="form-group">
+                  <label for="location" class="form-label">Location</label>
+                  <input 
+                    type="text" 
+                    id="location" 
+                    name="location" 
+                    value="<%= user.location || '' %>"
+                    placeholder="e.g., San Francisco, CA"
+                    class="form-input"
+                    aria-describedby="location-hint"
+                  />
+                  <p id="location-hint" class="form-hint">Your company's primary location</p>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                  <label for="phone" class="form-label">Phone Number</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    value="<%= user.phone || '' %>"
+                    placeholder="+1 (555) 123-4567"
+                    class="form-input"
+                    aria-describedby="phone-hint"
+                  />
+                  <p id="phone-hint" class="form-hint">Optional - for direct communication with investors</p>
+                </div>
+
+                <!-- Website -->
+                <div class="form-group">
+                  <label for="website" class="form-label">Website</label>
+                  <input 
+                    type="url" 
+                    id="website" 
+                    name="website" 
+                    value="<%= user.website || '' %>"
+                    placeholder="https://www.yourcompany.com"
+                    class="form-input"
+                    aria-describedby="website-hint"
+                  />
+                  <p id="website-hint" class="form-hint">Your company's website URL</p>
+                </div>
+
+                <!-- Bio/Description -->
+                <div class="form-group full-width">
+                  <label for="bio" class="form-label">Bio/Description</label>
+                  <textarea 
+                    id="bio" 
+                    name="bio" 
+                    rows="4"
+                    placeholder="Tell investors about yourself and your company..."
+                    class="form-textarea"
+                    aria-describedby="bio-hint"
+                  ><%= user.bio || '' %></textarea>
+                  <p id="bio-hint" class="form-hint">A brief description of yourself and your company (max 500 characters)</p>
+                </div>
+
+                <!-- Funding Goal -->
+                <div class="form-group">
+                  <label for="fundingGoal" class="form-label">Funding Goal</label>
+                  <input 
+                    type="number" 
+                    id="fundingGoal" 
+                    name="fundingGoal" 
+                    value="<%= user.fundingGoal || '' %>"
+                    placeholder="100000"
+                    min="0"
+                    class="form-input"
+                    aria-describedby="fundingGoal-hint"
+                  />
+                  <p id="fundingGoal-hint" class="form-hint">Target funding amount in USD</p>
+                </div>
+
+                <!-- Stage -->
+                <div class="form-group">
+                  <label for="stage" class="form-label">Company Stage</label>
+                  <select 
+                    id="stage" 
+                    name="stage" 
+                    class="form-select"
+                    aria-describedby="stage-hint"
+                  >
+                    <option value="">Select Stage</option>
+                    <option value="Idea" <%= user.stage === 'Idea' ? 'selected' : '' %>>Idea</option>
+                    <option value="Prototype" <%= user.stage === 'Prototype' ? 'selected' : '' %>>Prototype</option>
+                    <option value="MVP" <%= user.stage === 'MVP' ? 'selected' : '' %>>MVP</option>
+                    <option value="Pre-Revenue" <%= user.stage === 'Pre-Revenue' ? 'selected' : '' %>>Pre-Revenue</option>
+                    <option value="Revenue" <%= user.stage === 'Revenue' ? 'selected' : '' %>>Revenue</option>
+                    <option value="Growth" <%= user.stage === 'Growth' ? 'selected' : '' %>>Growth</option>
+                    <option value="Expansion" <%= user.stage === 'Expansion' ? 'selected' : '' %>>Expansion</option>
+                  </select>
+                  <p id="stage-hint" class="form-hint">Current stage of your company</p>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+                  </svg>
+                  Update Profile
+                </button>
+                <a href="/profile" class="btn btn-secondary">Cancel</a>
+              </div>
+            </form>
+          </section>
+
+          <!-- Social Links Section -->
+          <section class="form-section" aria-labelledby="social-heading">
+            <h2 id="social-heading" class="section-title">Social Links</h2>
+            <p class="section-description">Add your social media profiles to help investors connect with you.</p>
+            
+            <form action="/profile/social" method="POST" class="social-form">
+              <div class="form-grid">
+                <!-- LinkedIn -->
+                <div class="form-group">
+                  <label for="linkedin" class="form-label">LinkedIn</label>
+                  <input 
+                    type="url" 
+                    id="linkedin" 
+                    name="linkedin" 
+                    value="<%= user.linkedin || '' %>"
+                    placeholder="https://linkedin.com/in/yourprofile"
+                    class="form-input"
+                  />
+                </div>
+
+                <!-- Twitter -->
+                <div class="form-group">
+                  <label for="twitter" class="form-label">Twitter</label>
+                  <input 
+                    type="url" 
+                    id="twitter" 
+                    name="twitter" 
+                    value="<%= user.twitter || '' %>"
+                    placeholder="https://twitter.com/yourusername"
+                    class="form-input"
+                  />
+                </div>
+
+                <!-- GitHub -->
+                <div class="form-group">
+                  <label for="github" class="form-label">GitHub</label>
+                  <input 
+                    type="url" 
+                    id="github" 
+                    name="github" 
+                    value="<%= user.github || '' %>"
+                    placeholder="https://github.com/yourusername"
+                    class="form-input"
+                  />
+                </div>
+
+                <!-- Other Link -->
+                <div class="form-group">
+                  <label for="otherLink" class="form-label">Other Link</label>
+                  <input 
+                    type="url" 
+                    id="otherLink" 
+                    name="otherLink" 
+                    value="<%= user.otherLink || '' %>"
+                    placeholder="https://yourportfolio.com"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+                  </svg>
+                  Update Social Links
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-title">FundMatch</h3>
+          <p class="footer-description">Connecting startups with investors</p>
+        </div>
+        <div class="footer-section">
+          <h4 class="footer-subtitle">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/investors">Find Investors</a></li>
+            <li><a href="/help">Help</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4 class="footer-subtitle">Support</h4>
+          <ul class="footer-links">
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 FundMatch. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Image preview functionality
+    function previewImage(input, previewClass) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.querySelector(`.${previewClass}`);
+          if (preview) {
+            preview.src = e.target.result;
+          } else {
+            // Create new preview image if doesn't exist
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = previewClass;
+            img.alt = 'Preview';
+            
+            const placeholder = input.closest('.upload-item').querySelector('.placeholder-avatar, .placeholder-cover');
+            if (placeholder) {
+              placeholder.parentNode.replaceChild(img, placeholder);
+            }
+          }
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+      const forms = document.querySelectorAll('form');
+      
+      forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+          const requiredFields = form.querySelectorAll('[required]');
+          let isValid = true;
+          
+          requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+              field.classList.add('error');
+              isValid = false;
+            } else {
+              field.classList.remove('error');
+            }
+          });
+          
+          if (!isValid) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+          }
+        });
+      });
+    });
+
+    // Character count for bio
+    const bioTextarea = document.getElementById('bio');
+    if (bioTextarea) {
+      bioTextarea.addEventListener('input', function() {
+        const maxLength = 500;
+        const currentLength = this.value.length;
+        const hint = document.getElementById('bio-hint');
+        
+        if (currentLength > maxLength) {
+          this.value = this.value.substring(0, maxLength);
+        }
+        
+        if (hint) {
+          hint.textContent = `A brief description of yourself and your company (${currentLength}/${maxLength} characters)`;
+        }
+      });
+    }
+  </script>
+</body>
+</html>

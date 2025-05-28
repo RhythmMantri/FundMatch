@@ -3,73 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FundMatch - Profile</title>
+  <meta name="description" content="FundMatch Profile Dashboard - Manage your startup profile and connect with investors"/>
+  <title><%= title || 'Profile - FundMatch' %></title>
+  <link rel="stylesheet" href="/stylesheets/style.css"/>
   <link rel="stylesheet" href="/stylesheets/profile.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="/stylesheets/profile.css" rel="stylesheet">
 </head>
 <body>
   <!-- Header -->
-  <header class="header">
+  <header class="header" role="banner">
     <div class="container">
-      <nav class="navbar">
-        <div class="logo">FundMatch</div>
+      <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="logo">
+          <a href="/" aria-label="FundMatch Home">FundMatch</a>
+        </div>
         <div class="nav-links">
-          <a href="#">Dashboard</a>
-          <a href="#">Matches</a>
-          <a href="#">Messages</a>
-          <a href="#">Favorites</a>
+          <a href="/dashboard" aria-label="Dashboard">Dashboard</a>
+          <a href="/matches" aria-label="View Matches">Matches</a>
+          <a href="/messages" aria-label="Messages">Messages</a>
+          <a href="/favorites" aria-label="Favorites">Favorites</a>
         </div>
         <div class="auth-buttons">
-          <a href="/profile" class="user-profile-link">
+          <a href="/profile" class="user-profile-link" aria-label="View Profile">
             <div class="user-avatar">
-              <img src="<%= user.avatarUrl || '/images/default-avatar.png' %>" alt="Profile"/>
+              <% if (user.avatar) { %>
+                <img src="data:image/jpeg;base64,<%= user.avatar.toString('base64') %>" alt="<%= user.fullname %> Profile Picture"/>
+              <% } else { %>
+                <img src="/images/default-avatar.png" alt="Default Profile Picture"/>
+              <% } %>
             </div>
             <span class="user-name"><%= user.fullname %></span>
           </a>
-          <a href="/logout" class="btn btn-outline">Log Out</a>
+          <a href="/logout" class="btn btn-outline" aria-label="Log Out">Log Out</a>
         </div>
       </nav>
     </div>
   </header>
 
-  <!-- Profile -->
-  <main class="profile-section">
+  <!-- Success/Error Messages -->
+  <% if (typeof success !== 'undefined' && success) { %>
+    <div class="alert alert-success" role="alert">
+      <% if (success === 'profile_updated') { %>
+        Profile updated successfully!
+      <% } else if (success === 'images_uploaded') { %>
+        Images uploaded successfully!
+      <% } %>
+    </div>
+  <% } %>
+  
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-error" role="alert">
+      <%= error %>
+    </div>
+  <% } %>
+
+  <!-- Profile Section -->
+  <main class="profile-section" role="main">
     <div class="container">
       <!-- Profile Header -->
-      <div class="profile-header">
+      <section class="profile-header" aria-labelledby="profile-heading">
         <div class="profile-cover">
-          <img src="<%= user.coverUrl || '/images/default-cover.jpg' %>" alt="Cover"/>
+          <% if (user.cover) { %>
+            <img src="data:image/jpeg;base64,<%= user.cover.toString('base64') %>" alt="<%= user.fullname %> Cover Photo"/>
+          <% } else { %>
+            <img src="/images/default-cover.jpg" alt="Default Cover Photo"/>
+          <% } %>
         </div>
         <div class="profile-info">
           <div class="profile-avatar">
-            <img src="<%= user.avatarUrl || '/images/default-avatar.png' %>" alt="<%= user.fullname %>"/>
+            <% if (user.avatar) { %>
+              <img src="data:image/jpeg;base64,<%= user.avatar.toString('base64') %>" alt="<%= user.fullname %> Profile Picture"/>
+            <% } else { %>
+              <img src="/images/default-avatar.png" alt="Default Profile Picture"/>
+            <% } %>
           </div>
           <div class="profile-details">
-            <h1><%= user.fullname %></h1>
-            <p class="company-name"><%= user.company %></p>
+            <h1 id="profile-heading"><%= user.fullname %></h1>
+            <% if (user.company) { %>
+              <p class="company-name"><%= user.company %></p>
+            <% } %>
             <p class="profile-email"><%= user.email %></p>
+            <% if (user.bio) { %>
+              <p class="profile-bio"><%= user.bio %></p>
+            <% } %>
           </div>
           <div class="profile-actions">
-            <button class="btn btn-primary">Edit Profile</button>
+            <a href="/profile/edit" class="btn btn-primary" aria-label="Edit Profile">Edit Profile</a>
+            <button class="btn btn-outline btn-upload" onclick="openUploadModal()" aria-label="Upload Images">Upload Images</button>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Content Layout -->
       <div class="profile-content">
         <!-- Sidebar -->
-        <aside class="profile-sidebar">
-          <nav class="profile-menu">
-            <a href="#" class="profile-menu-item active">Overview</a>
-            <a href="#" class="profile-menu-item">Pitch Deck</a>
-            <a href="#" class="profile-menu-item">Team</a>
-            <a href="#" class="profile-menu-item">Financials</a>
-            <a href="#" class="profile-menu-item">Documents</a>
-            <a href="#" class="profile-menu-item">Settings</a>
+        <aside class="profile-sidebar" role="complementary" aria-label="Profile navigation">
+          <nav class="profile-menu" aria-label="Profile sections">
+            <a href="#overview" class="profile-menu-item active" aria-current="page">Overview</a>
+            <a href="#pitch-deck" class="profile-menu-item">Pitch Deck</a>
+            <a href="#team" class="profile-menu-item">Team</a>
+            <a href="#financials" class="profile-menu-item">Financials</a>
+            <a href="#documents" class="profile-menu-item">Documents</a>
+            <a href="#settings" class="profile-menu-item">Settings</a>
           </nav>
 
           <div class="profile-completion">
             <h3>Profile Completion</h3>
-            <div class="progress-bar">
+            <div class="progress-bar" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completion progress">
               <div class="progress" style="width: 65%;"></div>
             </div>
             <p>65% Complete</p>
@@ -84,20 +126,26 @@
         </aside>
 
         <!-- Main Profile Content -->
-        <section class="profile-main">
-          <div class="profile-section-card">
+        <section class="profile-main" role="main">
+          <div class="profile-section-card" id="overview">
             <h2>About</h2>
-            <p class="empty-state">Add a description about your startup to help investors understand your vision.</p>
-            <button class="btn btn-outline btn-sm">Add Description</button>
+            <% if (user.bio) { %>
+              <p class="about-text"><%= user.bio %></p>
+              <a href="/profile/edit" class="btn btn-outline btn-sm">Edit Description</a>
+            <% } else { %>
+              <p class="empty-state">Add a description about your startup to help investors understand your vision.</p>
+              <a href="/profile/edit" class="btn btn-outline btn-sm">Add Description</a>
+            <% } %>
           </div>
 
           <div class="profile-section-card">
             <div class="card-header">
               <h2>Funding Information</h2>
-              <button class="btn btn-outline btn-sm">Edit</button>
+              <a href="#" class="btn btn-outline btn-sm">Edit</a>
             </div>
             <div class="funding-info empty-state">
               <p>Complete your funding information to attract potential investors.</p>
+              <button class="btn btn-primary btn-sm">Add Funding Info</button>
             </div>
           </div>
 
@@ -117,8 +165,15 @@
               <div class="activity-item">
                 <div class="activity-icon"></div>
                 <div class="activity-content">
-                  <p class="activity-text">Profile created.</p>
-                  <p class="activity-time">Just now</p>
+                  <p class="activity-text">Profile updated with new information.</p>
+                  <p class="activity-time">1 week ago</p>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon"></div>
+                <div class="activity-content">
+                  <p class="activity-text">Profile created successfully.</p>
+                  <p class="activity-time">2 weeks ago</p>
                 </div>
               </div>
             </div>
@@ -131,7 +186,7 @@
             </div>
             <div class="investor-recommendations empty-state">
               <p>Complete your profile to receive personalized investor recommendations.</p>
-              <button class="btn btn-primary btn-sm">Complete Profile</button>
+              <a href="/profile/edit" class="btn btn-primary btn-sm">Complete Profile</a>
             </div>
           </div>
         </section>
@@ -139,37 +194,65 @@
     </div>
   </main>
 
+  <!-- Upload Modal -->
+  <div class="modal-overlay" id="uploadModal" onclick="closeUploadModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Upload Images</h3>
+        <button class="modal-close" onclick="closeUploadModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <form action="/profile/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+        <div class="form-group">
+          <label for="avatar" class="form-label">Profile Picture</label>
+          <input type="file" id="avatar" name="avatar" accept="image/*" class="file-input"/>
+          <p class="form-hint">Maximum size: 5MB. Accepted formats: JPG, PNG, GIF</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="cover" class="form-label">Cover Photo</label>
+          <input type="file" id="cover" name="cover" accept="image/*" class="file-input"/>
+          <p class="form-hint">Maximum size: 5MB. Accepted formats: JPG, PNG, GIF</p>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeUploadModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Upload Images</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="container">
       <div class="footer-content">
-        <div>
+        <div class="footer-section">
           <div class="footer-logo">FundMatch</div>
           <p class="footer-description">Bridging the gap between innovative startups and visionary investors.</p>
         </div>
-        <div>
+        <div class="footer-section">
           <h4 class="footer-title">Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Find Investors</a></li>
-            <li><a href="#">Messages</a></li>
-            <li><a href="#">Help Center</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/investors">Find Investors</a></li>
+            <li><a href="/messages">Messages</a></li>
+            <li><a href="/help">Help Center</a></li>
           </ul>
         </div>
-        <div>
+        <div class="footer-section">
           <h4 class="footer-title">Resources</h4>
           <ul class="footer-links">
-            <li><a href="#">Pitch Guide</a></li>
-            <li><a href="#">Funding Resources</a></li>
-            <li><a href="#">Success Stories</a></li>
+            <li><a href="/resources/pitch-guide">Pitch Guide</a></li>
+            <li><a href="/resources/funding">Funding Resources</a></li>
+            <li><a href="/resources/success-stories">Success Stories</a></li>
           </ul>
         </div>
-        <div>
+        <div class="footer-section">
           <h4 class="footer-title">Support</h4>
           <ul class="footer-links">
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
           </ul>
         </div>
       </div>
@@ -178,5 +261,49 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Upload modal functionality
+    function openUploadModal() {
+      document.getElementById('uploadModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeUploadModal() {
+      document.getElementById('uploadModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Auto-hide alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          alert.style.opacity = '0';
+          setTimeout(() => {
+            alert.remove();
+          }, 300);
+        }, 5000);
+      });
+    });
+
+    // Profile menu smooth scrolling
+    document.querySelectorAll('.profile-menu-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Update active state
+            document.querySelectorAll('.profile-menu-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
